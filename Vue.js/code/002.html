@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <ol id="app1">
+        <todo-item></todo-item>
+    </ol>
+    <div id="app2">
+         <ol>
+            <t-item
+            v-for="item in Lists"
+            v-bind:todo="item"
+            v-bind:key="item.id"></t-item>
+         </ol>   
+    </div>
+
+<script> 
+    Vue.component('todo-item', {
+        template:  '<li>this is a todo item</li>' 
+    })
+    Vue.component('t-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+    /*
+    var app1 = new Vue({
+        el: '#app1'
+    })
+    */
+    new Vue({
+        el: '#app1'
+    })
+    var app2 = new Vue({
+        el: '#app2',
+        data: {
+            Lists: [
+                {id: 0, text: '蔬菜'},
+                {id: 1, text: '西红柿'},
+                {id: 2, text: '武器'},
+                {id: 3, text: '剑圣'},
+            ]
+        }
+
+    })
+</script>
+</body>
+</html>
