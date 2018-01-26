@@ -302,3 +302,173 @@ if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
 ```
+
+# 请求解析
+
+## 基本参数
+
+```python
+from flask_restful import reqparse
+
+parser = reqparse.RequestParser()
+parser.add_argument('rate', type=int, help="Rate cannont be canverted")
+parser.add_argument('name', type=str)
+args = parser.parse_args()
+```
+- type
+
+```
+指定的类型
+```
+
+- help
+
+```
+如果你指定了 help 参数的值，在解析的时候当类型错误被触发的时候，它将会被作为错误信息给呈现出来。如果你没有指定 help 信息的话，默认行为是返回类型错误本身的信息。
+```
+
+## 必需的参数
+
+- required
+
+```
+要求一个值传递的参数，只需要添加 required=True 来调用 add_argument()。
+```
+
+```python
+parser.add_argument('name', type=str, required=True,
+help="Name cannot be blank!")
+```
+
+## 多个值&列表
+
+```
+如果你要接受一个键有多个值的话，你可以传入 action='append'
+```
+
+```python
+parser.add_argument('name', type=str, action='append')
+
+# curl http://api.example.com -d "Name=bob" -d "Name=sue" -d "Name=joe"
+
+# args = parser.parse_args()
+# args['name']    # ['bob', 'sue', 'joe']
+```
+
+## 其他目标
+
+```
+如果由于某种原因，你想要以不同的名称存储你的参数一旦它被解析的时候，你可以使用 dest kwarg。
+```
+
+```python
+parser.add_argument('name', type=str, dest='public_name')
+
+args = parser.parse_args()
+args['public_name']
+```
+
+## 参数位置
+
+```
+默认下，RequestParser 试着从 flask.Request.values，以及 flask.Request.json 解析值。
+
+在 add_argument() 中使用 location 参数可以指定解析参数的位置。flask.Request 中任何变量都能被使用
+```
+
+```python
+# Look only in the POST body
+parser.add_argument('name', type=int, location='form')
+
+# Look only in the querystring
+parser.add_argument('PageSize', type=int, location='args')
+
+# From the request headers
+parser.add_argument('User-Agent', type=str, location='headers')
+
+# From http cookies
+parser.add_argument('session_id', type=str, location='cookies')
+
+# From file uploads
+parser.add_argument('picture', type=werkzeug.datastructures.FileStorage, location='files')
+```
+
+## 多个位置
+
+```
+通过传入一个列表到 location 中可以指定 多个 参数位置:
+```
+
+```python
+parser.add_argument('text', location=['headers', 'values'])
+```
+
+## 继承解析
+
+```
+往往你会为你编写的每个资源编写不同的解析器。这样做的问题就是如果解析器具有共同的参数。不是重写，你可以编写一个包含所有共享参数的父解析器接着使用 copy() 扩充它。你也可以使用 replace_argument() 覆盖父级的任何参数，或者使用 remove_argument() 完全删除参数
+```
+
+```python
+from flask.ext.restful import RequestParser
+
+parser = RequestParser()
+parser.add_argument('foo', type=int)
+
+parser_copy = parser.copy()
+parser_copy.add_argument('bar', type=int)
+
+# parser_copy has both 'foo' and 'bar'
+
+parser_copy.replace_argument('foo', type=str, required=True, location='json')
+# 'foo' is now a required str located in json, not an int as defined
+#  by original parser
+
+parser_copy.remove_argument('foo')
+# parser_copy no longer has 'foo' argument
+```
+
+## 常见问题: 解析嵌套的dict
+
+```python
+# 实例
+from flask import Flask
+from flask_restful import Resource, Api, reqparse
+
+app = Flask(__name__)
+api = Api(app)
+
+
+class Hello(Resource):
+    """
+    {
+        "user" : {
+            "name": "buglan,
+            "sex": "man"
+        }
+    }
+    """
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+        self.parser.add_argument('user', type=dict)
+        self.parser1 = reqparse.RequestParser()
+        self.parser1.add_argument('name', type=str, location=('user'))
+        super(Hello, self).__init__()
+    def post(self):
+        args = self.parser.parse_args()
+        args1 = self.parser1.parse_args(req=args)
+        print(args['user'])
+        print(args1['name'])
+        pass
+
+api.add_resource(Hello, '/hello')
+
+if __name__ == "__main__":
+    app.run()
+```
+
+# 输出字段
+
+# 扩张flask-restful
+
+# 中高级用法
