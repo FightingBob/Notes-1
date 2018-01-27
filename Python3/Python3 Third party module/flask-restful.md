@@ -469,6 +469,122 @@ if __name__ == "__main__":
 
 # 输出字段
 
+## 基本反应
+
+```python
+from flask_restful import Resource, fields, marshal_with
+
+resource_fields = {
+    'name': fields.String,
+    'address': fields.String,
+    'date_updated': fields.DateTime(dt_format='rfc822'),
+}
+
+class Todo(Resource):
+    @marshal_with(resource_fields, envelope='resource')
+    def get(self, **kwargs):
+        return db_get_todo()
+```
+
+## 重命名属性
+
+```python
+fields = {
+    'name': fields.String(attribute='private_name'),
+    'address': fields.String,
+}
+```
+
+```python
+fields = {
+    'name': fields.String(attribute=lambda x: x._private_name),
+    'address': fields.String,
+}
+```
+
+## 默认值
+
+```python
+fields = {
+    'name': fields.String(default='Anonymous User'),
+    'address': fields.String,
+}
+```
+
+## 自定义字段&多个值
+
+```python
+class UrgentItem(fields.Raw):
+    def format(self, value):
+        return "Urgent" if value & 0x01 else "Normal"
+
+class UnreadItem(fields.Raw):
+    def format(self, value):
+        return "Unread" if value & 0x02 else "Read"
+
+fields = {
+    'name': fields.String,
+    'priority': UrgentItem(attribute='flags'),
+    'status': UnreadItem(attribute='flags'),
+}
+```
+
+## Url & 其它具体字段¶
+
+```python
+class RandomNumber(fields.Raw):
+    def output(self, key, obj):
+        return random.random()
+
+fields = {
+    'name': fields.String,
+    # todo_resource is the endpoint name when you called api.add_resource()
+    'uri': fields.Url('todo_resource'),
+    'random': RandomNumber,
+}
+```
+
+```
+默认情况下，fields.Url 返回一个相对的 uri。为了生成包含协议（scheme），主机名以及端口的绝对 uri，需要在字段声明的时候传入 absolute=True。传入 scheme 关键字参数可以覆盖默认的协议（scheme）:
+```
+
+```python
+fields = {
+    'uri': fields.Url('todo_resource', absolute=True)
+    'https_uri': fields.Url('todo_resource', absolute=True, scheme='https')
+}
+```
+
+## 列表字段
+
+```python
+>>> from flask.ext.restful import fields, marshal
+>>> import json
+>>>
+>>> resource_fields = {'name': fields.String, 'first_names': fields.List(fields.String)}
+>>> data = {'name': 'Bougnazal', 'first_names' : ['Emile', 'Raoul']}
+>>> json.dumps(marshal(data, resource_fields))
+>>> '{"first_names": ["Emile", "Raoul"], "name": "Bougnazal"}'
+```
+
+## 复杂结构
+
+```python
+>>> from flask.ext.restful import fields, marshal
+>>> import json
+>>>
+>>> resource_fields = {'name': fields.String}
+>>> resource_fields['address'] = {}
+>>> resource_fields['address']['line 1'] = fields.String(attribute='addr1')
+>>> resource_fields['address']['line 2'] = fields.String(attribute='addr2')
+>>> resource_fields['address']['city'] = fields.String
+>>> resource_fields['address']['state'] = fields.String
+>>> resource_fields['address']['zip'] = fields.String
+>>> data = {'name': 'bob', 'addr1': '123 fake street', 'addr2': '', 'city': 'New York', 'state': 'NY', 'zip': '10468'}
+>>> json.dumps(marshal(data, resource_fields))
+'{"name": "bob", "address": {"line 1": "123 fake street", "line 2": "", "state": "NY", "zip": "10468", "city": "New York"}}'
+```
+
 # 扩张flask-restful
 
 # 中高级用法
