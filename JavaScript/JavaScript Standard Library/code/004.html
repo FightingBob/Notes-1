@@ -18,6 +18,17 @@
         }
         var filted = [100, 9, 1, 120].filter(is_big);
         console.log(filted);
+
+        console.log('--------------');
+        function isBig(value) {
+            if (value > 10) {
+                return value;
+            }
+            // return value > 10;
+        }
+        let l = [1,2,11,20];
+        let l_filter = l.filter(isBig);
+        console.log(l_filter);
     
     </script>
     
