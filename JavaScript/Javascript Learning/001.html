@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    // 词法结构:
+    // 字符集为Unicode
+    // 区分大小写, html的属性或者标签在JavaScript中必须写成小写 如onClick 写成 onclick
+    console.log('\u0020'); // 空格
+
+    // 注释:
+    // 单行注释
+    /* 多
+       行
+       注释
+     */
+
+    // 直接量:
+        /*
+        12
+        1.2
+        "hello,world"
+        'Hi'
+        true
+        false
+        null
+        */
+
+    // 保留字
+    // break delete function return typeof
+    // case do if switch var
+    // catch else in this void
+    // continue false instanceof throw while
+    // debugger finally new true with
+    // default for null try
+
+    // 可能会用到的保留字
+    // class const enum export extends import super
+    // 注: es5
+
+    // 严格模式下的保留字
+    // implements let private public yield
+    // interface package protected static
+
+    // 其他不能用作名称的标识符
+    // arguments eval
+
+    // 其他保留字见 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects
+
+    var a
+    a
+    =
+        3
+    console.log(a);
+    // 这样的语句也是合法的 真是操蛋
+    // === var a; a = 3; console.log(a);
+
+    var a = 1;
+    var b = 1.1;
+    console.log(typeof a, typeof b);
+    console.log(typeof(a), typeof(b));
+    console.log(typeof(a, b)); // 只输出a的类型
+
+    // 算术运算
+    // +
+    // -
+    // *
+    // /
+    // %
+
+    // 运算结果溢出为 Infinity 或 -Infinity
+    console.log(1 / 0);
+    console.log(-1 / 0);
+
+    // NaN
+    console.log(NaN != NaN); // true
+    var x = .3 - .2;
+    var y = .2 - .1;
+    console.log(x == y); // false
+    // python 也存在这个问题
+
+
+    // 日期
+    var then = new Date(2018, 0, 1);
+    console.log(then.getFullYear());
+    var now = new Date();
+    console.log(now.getHours());
+
+    // 转义符
+    // '\'
+
+    // true false
+    // 下面这些值认为是false
+
+    /*
+    undefined
+    null
+    0
+    -0
+    NaN
+    ""
+    */
+
+    // page is 60
+
+    // 注意隐式转化
+
+    null == undefined;
+    "0" == 0;
+    0 == false;
+    "0" == false;
+
+
+    // 显示转换
+
+    Number("3");
+    String(false);
+    Boolean([])
+    Object(3)
+    typeof null;
+    /*
+    switch(n) {
+        case 1:
+        break;
+        default
+    };
+    */
+
+    while (n > 0) {};
+
+    do {} while(n > 0);
+    for(a;b;c);
+    for (variable in object) {};
+    return ;
+    // 标签语句
+    mainloop: while(n) {};
+    continue mainloop;  
+    break;
+    continue;
+    // throw;
+    try{}
+    catch(e){}
+    finally{};
+    whit();
+    debugger;
+    "use strict";
+    
+
+    var a = new Object();
+    var b = Object.create();
+
+    object.proprety
+    object["proprety"]
+
+    //paeg is 219
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
